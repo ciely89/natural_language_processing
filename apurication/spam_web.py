@@ -7,8 +7,8 @@ from sklearn.naive_bayes import GaussianNB
 app = Flask(__name__)
 
 # ファイル名
-data_file = "./ok-spam.pickle"
-model_file = "./ok-spam-model.pickle"
+data_file = "apurication\ok-spam.pickle"
+model_file = "apurication\ok-spam-model.pickle"
 label_names = ['OK', 'SPAM']
 
 # 単語辞書を読み出す --- (※2)
