@@ -11,34 +11,33 @@ data_file = "apurication\ok-spam.pickle"
 model_file = "apurication\ok-spam-model.pickle"
 label_names = ['OK', 'SPAM']
 
-# 単語辞書を読み出す --- (※2)
+# 学習用データの読み込み
 data = pickle.load(open(data_file, "rb"))
 word_dic = data[2]
 
-# MeCabの準備
 tagger = MeCab.Tagger()
 
-# 学習済みモデルを読み出す --- (※3) 
+# 学習済みモデルを読み込む
 model = pickle.load(open(model_file, "rb"))
 
-# テキストがスパムかどうか判定する --- (※4)
+# テキストがスパムかどうか判定する
 def check_spam(text):
-    # テキストを単語IDのリストに変換し単語の頻出頻度を調べる
+
     zw = np.zeros(word_dic['__id'])
     count = 0
     s = tagger.parse(text)
-    # 単語毎の回数を加算 --- (※5)
+    
     for line in s.split("\n"):
         if line == "EOS" or line == "":
             continue
         try:
             parts = line.split("\t")
             if len(parts) < 2:
-                continue  # タブ区切りが足りない行をスキップ
+                continue
             features = parts[1].split(",")
             if len(features) < 7:
-                continue  # 原型が見つからない場合スキップ
-            org = features[6]  # 単語の原型を取得
+                continue
+            org = features[6]
             if org in word_dic:
                 id = word_dic[org]
                 zw[id] += 1
@@ -47,14 +46,14 @@ def check_spam(text):
             print(f"例外が発生しました: {e}, 行: {line}")
             continue
     if count > 0:
-        zw = zw / count #  --- (※6)
+        zw = zw / count
         # 予測
-        pre = model.predict([zw])[0] #  --- (※7)
+        pre = model.predict([zw])[0]
         return label_names[pre]
     else:
         return "単語が見つかりませんでした"
 
-# ルートページの処理
+#ページ処理
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = ""
