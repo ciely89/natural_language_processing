@@ -51,7 +51,7 @@ def check_spam(text):
         pre = model.predict([zw])[0]
         return label_names[pre]
     else:
-        return "単語が見つかりませんでした"
+        return "単語が見つかりませんでした。もしくは文章が短いです。"
 
 #ページ処理
 @app.route("/", methods=["GET", "POST"])
